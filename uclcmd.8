@@ -1,0 +1,130 @@
+.Au Allan Jude
+.Dt uclcmd 8
+.Os
+.Dd Nov 20 2024
+.Pp
+.Sh  NAME
+.Nm uclcmd
+.Nd A tool for working with UCL configuration files.
+.Pp
+.Sh  DESCRIPTION
+Command line tool for working with UCL config files
+.Pp
+.Sh  SYNOPSIS
+.Nm
+.Ar get
+.Op Fl cdeIjklmNquy
+.Op Fl D Ar char
+.Op Fl f Ar file
+.Op Fl o Ar file
+.Ar variable
+.Nm
+.Ar set
+.Op Fl cdIjmnuy
+.Op Fl t Ar type
+.Op Fl D Ar char
+.Op Fl f Ar file
+.Op Fl i Ar file
+.Op Fl o Ar file
+.Op Ar UCL
+.Nm
+.Ar merge
+.Op Fl D Ar char
+.Op Fl f Ar file
+.Op Fl i Ar file
+.Op Fl o Ar file
+.Ar variable
+.Nm
+.Ar remove
+.Op Fl cdeIjklmNquy
+.Op Fl D Ar char
+.Op Fl f Ar file
+.Op Fl o Ar file
+.Ar variable
+.Pp
+.Sh  DESCRIPTION
+Designed to be somewhat compatible with jq by implementing a very similar syntax: `.object.object.arrayindex|command` instead of jq's `.object.object[arrayindex]|command`
+.Pp
+Although uclcmd commands are not actually 'piped' and only the 'each' command can be stacked. Running other commands just runs them sequentially.
+.Pp
+The following options are available:
+.Bl -tag -width Ds
+.It Fl c -cjson
+Output compacted JSON
+.Pp
+.It Fl d -debug
+Enable verbose debugging output
+.Pp
+.It Fl D -delimiter
+Character to use as element delimiter (default is .)
+.Pp
+.It Fl e -expand
+Output the list of keys when encountering an object
+.Pp
+.It Fl f -file
+Path to a file to read or write
+.Pp
+.It Fl I -foldcase
+Fold all keys to lowercase (make matching insensitive)
+.Pp
+.It Fl j -json
+Output pretty JSON
+.Pp
+.It Fl k -keys
+Show key=value rather than just the value
+.Pp
+.It Fl l -shellvars
+Keys are output with underscores as delimiter
+.Pp
+.It Fl m -msgpack
+Output MSGPACK
+.Pp
+.It Fl n -noop
+Do not save changes to file, only output to STDOUT
+.Pp
+.It Fl N -nonewline
+Separate output with spaces rather than newlines
+.Pp
+.It Fl o -output
+File to write output to, defaults to STDOUT
+.Pp
+.It Fl q -noquotes
+Do not enclose strings in quotes
+.Pp
+.It Fl t -type
+Make the new element this type
+.Pp
+.It Fl u -ucl
+Output universal config language
+.Pp
+.It Fl y -yaml
+Output YAML
+.El
+variable
+- The key of the variable to read, in object notation
+.Pp
+[UCL]
+- A block of UCL to be written to the specified variable
+.Sh  SET OPTIONS
+.Bl -tag -width Ds
+.It Fl i -input
+use indicated file as additional input (for combining)
+.El
+.Pp
+.Sh  MERGE OPTIONS
+.Bl -tag -width Ds
+.It Fl i -input
+use indicated file as additional input (for merging)
+.El
+.Pp
+.Sh  EXAMPLES
+.Bd -literal -offset indent
+  # uclcmd get --file vmconfig .name
+      "value"
+.Pp
+  # uclcmd get --file vmconfig --keys --noquotes array.1.name
+      array.1.name=value
+.Pp
+  # uclcmd get --file vmconfig --keys --shellvars array.1.name
+      array_1_name="value"
+.Ed
